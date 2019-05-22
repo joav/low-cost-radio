@@ -1,6 +1,13 @@
 import React from 'react';
 import { StyleSheet, Text, View, Button, AsyncStorage} from 'react-native';
 import TrackPlayer from 'react-native-track-player';
+
+import * as PP from 'playlist-parser';
+
+const M3U = PP.M3U;
+const PLS = PP.PLS;
+const ASX = PP.ASX;
+
 export default class StationScreen extends React.Component {
 	static navigationOptions = {
 		title: 'Emisora',
@@ -49,9 +56,15 @@ export default class StationScreen extends React.Component {
 		try{
 			let station = await AsyncStorage.getItem('selectedStation');
 			station = JSON.parse(station);
+			let url = station.streams[0];
+			if(url.indexOf('/pls/') > 0 || url.indexOf('.pls') > 0 ){
+				let file = await this.getPls(url);
+				let pl = PLS.parse(file);
+				url = pl[0].file;
+			}
 			let track = {
 				id: station.guide_id,
-				url: station.streams[0].Url
+				url: url
 			};
 			console.log(station)
 			this.setState({
@@ -83,6 +96,10 @@ export default class StationScreen extends React.Component {
 			await TrackPlayer.reset();
 			this.setState({btnTitle: 'Reproducir'});
 		}
+	}
+	async getPls(url){
+		return fetch(url)
+		.then(response => response.text());
 	}
 	render(){
 		return (

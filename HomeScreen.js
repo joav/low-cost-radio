@@ -1,14 +1,6 @@
 import React from 'react';
 import { StyleSheet, Text, View, Button, AsyncStorage} from 'react-native';
 
-function getst(stations) {
-	return Promise.all(stations.map(station=>{
-		return fetch('https:'+station.StreamUrl)
-			.then(d=>d.json())
-			.catch(e=>console.log(e))
-	}));
-}
-
 export default class HomeScreen extends React.Component {
 	static navigationOptions = {
 		title: 'Home',
@@ -20,10 +12,9 @@ export default class HomeScreen extends React.Component {
 		this.onSync = this.onSync.bind(this);
 	}
 	async saveStreams(stations){
-		var streams = await getst(stations);
 		console.log('listado de Streams recibidos');
 		for (var i = 0; i < stations.length; i++) {
-			stations[i].streams = streams[i].Streams;
+			stations[i].streams = stations[i].StreamsFile.split("\n");
 		}
 		try{
 			console.log('intentando guardar json con emisoras');
@@ -41,7 +32,7 @@ export default class HomeScreen extends React.Component {
 		var lastResp = function(stationsD){
 			console.log('URL a los Streams Recibidos');
 			for (var i = 0; i < stations.length; i++) {
-				stations[i].StreamUrl = stationsD[i].StreamUrl;
+				stations[i].StreamsFile = stationsD[i];
 			}
 			this.saveStreams(stations)
 		};
@@ -51,12 +42,18 @@ export default class HomeScreen extends React.Component {
 				console.log('Emisoras recibidas info basica');
 				stations = d.body[0].children;
 				return Promise.all(stations.map(station=>{
-					return fetch('https://tunein.com/tuner/tune/?tuneType=Station&stationId='+station.guide_id.substr(1))
-						.then(d=>d.json())
+					return fetch(station.URL)
+						.then(resp=>resp.text())
+						.catch(e=>{
+							console.log(e)
+						})
 					})
 				)
 			})
-			.then(lastResp.bind(this));
+			.then(lastResp.bind(this))
+			.catch(e=>{
+				console.log(e);
+			});
 	}
 	render() {
 		let title = this.state.stationsLoading?'Sincronizando...':'Sincronizar emisoras';

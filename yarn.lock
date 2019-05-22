@@ -4484,6 +4484,13 @@ pkg-dir@^2.0.0:
   dependencies:
     find-up "^2.1.0"
 
+playlist-parser@^0.0.12:
+  version "0.0.12"
+  resolved "https://registry.yarnpkg.com/playlist-parser/-/playlist-parser-0.0.12.tgz#4250e5b11771ad68213983bf9bb6ecab64ddf526"
+  integrity sha1-QlDlsRdxrWghOYO/m7bsq2Td9SY=
+  dependencies:
+    xmldom "0.1.16"
+
 plist@2.0.1:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/plist/-/plist-2.0.1.tgz#0a32ca9481b1c364e92e18dc55c876de9d01da8b"
@@ -6084,6 +6091,11 @@ xmldoc@^0.4.0:
   integrity sha1-0lciS+g5PqrL+DfvIn/Y7CWzaIg=
   dependencies:
     sax "~1.1.1"
+
+xmldom@0.1.16:
+  version "0.1.16"
+  resolved "https://registry.yarnpkg.com/xmldom/-/xmldom-0.1.16.tgz#cf2602832b1ab5c3e6813fca08fe70196ba15e8c"
+  integrity sha1-zyYCgysatcPmgT/KCP5wGWuhXow=
 
 xmldom@0.1.x:
   version "0.1.27"
